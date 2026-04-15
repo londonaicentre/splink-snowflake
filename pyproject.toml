@@ -1,0 +1,19 @@
+[project]
+name = "splink-snowflake"
+version = "0.1.0"
+description = "Snowflake backend support for Splink"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+keywords = [
+    "data linking",
+    "record linkage",
+    "entity resolution",
+    "deduplication",
+    "fuzzy matching",
+]
+license = {text = "MIT License"}
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
