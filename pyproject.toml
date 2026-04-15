@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "splink>=4.0.16",
+    "snowflake-connector-python[pandas]>=4.3.0"
 ]
 keywords = [
     "data linking",
