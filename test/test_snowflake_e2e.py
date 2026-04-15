@@ -164,7 +164,6 @@ df_final = pd.concat([df_l, df_r])
         ),
     ],
 )
-@mark_with_dialects_including("snowflake")
 def test_link_only(input, source_l, source_r, snowflake_api: SnowflakeAPI):
     settings = get_snowflake_settings_dict()
     settings["link_type"] = "link_only"
@@ -178,7 +177,6 @@ def test_link_only(input, source_l, source_r, snowflake_api: SnowflakeAPI):
     assert set(df_predict.source_dataset_r.values) == source_r
 
 
-@mark_with_dialects_including("snowflake")
 def test_small_example_snowflake(tmp_path, snowflake_api: SnowflakeAPI):
     df = pd.read_csv("./tests/datasets/fake_1000_from_splink_demos.csv")
     df["full_name"] = df["first_name"] + df["surname"]
@@ -228,7 +226,6 @@ def test_small_example_snowflake(tmp_path, snowflake_api: SnowflakeAPI):
     linker.inference.predict()
 
 
-@mark_with_dialects_including("snowflake")
 def test_snowflake_input_two_dataframes(snowflake_api: SnowflakeAPI):
     df1 = pd.read_csv("./tests/datasets/fake_1000_from_splink_demos.csv")
     df2 = pd.read_csv("./tests/datasets/fake_1000_from_splink_demos.csv")

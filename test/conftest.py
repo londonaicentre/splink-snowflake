@@ -6,7 +6,11 @@ from splink_snowflake import SnowflakeAPI
 
 @pytest.fixture(scope="session")
 def snowflake_connection() -> SnowflakeConnection:
-    return SnowflakeConnection("splink_dev")
+    """
+    Return a default connection for consumption in testing. If this needs to be
+    overriden then set: `SNOWFLAKE_DEFAULT_CONNECTION_NAME` to a different name.
+    """
+    return SnowflakeConnection()
 
 
 @pytest.fixture(scope="function")
