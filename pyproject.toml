@@ -16,6 +16,9 @@ keywords = [
     "fuzzy matching",
 ]
 license = {text = "MIT License"}
+authors = [
+    {"name" = "Lawrence Adams"}
+]
 
 [build-system]
 requires = ["hatchling"]
