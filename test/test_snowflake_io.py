@@ -8,7 +8,10 @@ from splink_snowflake import SnowflakeAPI
 
 @pytest.fixture
 def snowflake_connection() -> SnowflakeConnection:
-    return SnowflakeConnection("splink_dev")
+    """
+    Override environment variable `SNOWFLAKE_DEFAULT_CONNECTION_NAME` to change.
+    """
+    return SnowflakeConnection()
 
 
 def test_snowflake_create_dp_api(snowflake_connection: SnowflakeConnection):
