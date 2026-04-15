@@ -1,9 +1,5 @@
-from typing import TYPE_CHECKING
-
+from splink.internals.comparison_level_library import ArrayIntersectLevel
 from splink.internals.dialects import SplinkDialect
-
-if TYPE_CHECKING:
-    from splink.internals.comparison_level_library import ArrayIntersectLevel
 
 
 class SnowflakeDialect(SplinkDialect):
