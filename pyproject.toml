@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Snowflake backend support for Splink"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "splink>=4.0.16",
+]
 keywords = [
     "data linking",
     "record linkage",
