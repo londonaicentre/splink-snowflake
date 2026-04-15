@@ -1,5 +1,5 @@
 import logging
-from typing import  Union
+from typing import Sequence, Union
 
 import pandas as pd
 import snowflake.connector.pandas_tools as sf_pd_tools
@@ -7,11 +7,15 @@ from snowflake.connector.connection import SnowflakeConnection
 from snowflake.connector.cursor import SnowflakeCursor
 from datetime import datetime
 
-from splink.internals.database_api import DatabaseAPI
+from splink.internals.database_api import AcceptableInputTableType, DatabaseAPI
 from splink_snowflake.dialect import SnowflakeDialect
 from splink.internals.splink_dataframe import SplinkDataFrame
 
 from .dataframe import SnowflakeDataframe
+
+# Extend the upstream type to include additional types this backend accepts.
+# Add any further types here (e.g. snowflake.snowpark.DataFrame).
+SnowflakeAcceptableInputTableType = Union[AcceptableInputTableType, SnowflakeDataframe]
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +77,27 @@ class SnowflakeAPI(DatabaseAPI[SnowflakeCursor]):
         self._con.cursor().execute(
             "ALTER SESSION SET QUOTED_IDENTIFIERS_IGNORE_CASE = TRUE;"
         )
+
+    @property
+    def accepted_df_dtypes(self) -> list[type]:
+        """DataFrame types accepted by this backend in addition to the splink defaults."""
+        return [pd.DataFrame, SnowflakeDataframe]
+
+    def process_input_tables(
+        self, input_tables: Sequence[AcceptableInputTableType]
+    ) -> Sequence[AcceptableInputTableType]:
+        """Convert SnowflakeDataframe to its physical table name so splink treats it as
+        an already-registered table, avoiding any data materialisation on the running node.
+        """
+        converted: list[AcceptableInputTableType] = []
+        for table in input_tables:
+            if isinstance(table, SnowflakeDataframe):
+                # The table already exists in Snowflake — pass its name so splink
+                # skips _table_registration entirely (strings bypass that path).
+                converted.append(table.physical_name)
+            else:
+                converted.append(table)
+        return converted
 
     def _execute_sql_against_backend(self, final_sql: str) -> SnowflakeCursor:
         result = self._con.cursor().execute(final_sql)

@@ -1,3 +1,3 @@
-from splink_snowflake.database_api import SnowflakeAPI
+from splink_snowflake.database_api import SnowflakeAPI, SnowflakeAcceptableInputTableType
 
-__all__ = ["SnowflakeAPI"]
+__all__ = ["SnowflakeAPI", "SnowflakeAcceptableInputTableType"]
