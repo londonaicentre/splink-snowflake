@@ -21,16 +21,19 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
 
-      - name: Install dependencies
-        run: uv sync
-
       - name: Setup Snowflake cli
         uses: snowflakedb/snowflake-cli-action@v2.0
         with:
           use-oidc: true
           cli-version: "3.14.0"
 
+      - name: Install dependencies
+        run: uv sync
+        env:
+          UV_PYTHON: "3.12"
+
       - name: Run integration tests
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          UV_PYTHON: "3.12"
         run: uv run pytest tests/ -v
