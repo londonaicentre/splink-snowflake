@@ -17,16 +17,16 @@ on:
 
 jobs:
   integration:
-    if: |
-      github.event_name == 'push' ||
-      contains(github.event.pull_request.labels.*.name, 'run-integration')
     environment: ci
     runs-on: codebuild-londonaicentre-org-runner-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        # Need fetch-depth 0 to get origin/main
+        with:
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v5
 
@@ -58,24 +58,33 @@ jobs:
           echo "Version bump verified: $MAIN_VERSION → $PR_VERSION"
 
       - name: Setup Snowflake cli
+        if: |
+          github.event_name == 'push' ||
+          contains(github.event.pull_request.labels.*.name, 'run-integration')
         uses: snowflakedb/snowflake-cli-action@v2.0
         with:
           use-oidc: true
           cli-version: "3.14.0"
 
       - name: Install dependencies
+        if: |
+          github.event_name == 'push' ||
+          contains(github.event.pull_request.labels.*.name, 'run-integration')
         run: uv sync
         env:
           UV_PYTHON: "3.12"
 
       - name: Run integration tests
+        if: |
+          github.event_name == 'push' ||
+          contains(github.event.pull_request.labels.*.name, 'run-integration')
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           UV_PYTHON: "3.12"
         run: uv run pytest tests/ -v
 
   release:
-    needs: ci
+    needs: integration
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: codebuild-londonaicentre-org-runner-${{ github.run_id }}-${{ github.run_attempt }}
     environment: pypi

@@ -10,3 +10,7 @@
 - [Usage](./usage.md)
 - [Snowflake Specifics](./snowflake_specifics.md)
 - [Contributing](./contributing.md)
+
+---
+
+[Changelog](./changelog.md)
