@@ -31,7 +31,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           PR_VERSION=$(uv version --short)
-          git checkout origin/main -- pyproject.toml
+          git checkout main -- pyproject.toml
           MAIN_VERSION=$(uv version --short)
           git checkout HEAD -- pyproject.toml
 
