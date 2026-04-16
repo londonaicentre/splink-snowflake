@@ -1,4 +1,5 @@
 import os
+import time
 
 import pytest
 import snowflake.connector
@@ -6,14 +7,33 @@ from snowflake.connector import SnowflakeConnection
 
 from splink_snowflake import SnowflakeAPI
 
+DATABASE = "SPLINK_DEV"
+
 
 @pytest.fixture(scope="session")
 def snowflake_connection() -> SnowflakeConnection:
     return snowflake.connector.connect(
         account=os.environ["SNOWFLAKE_ACCOUNT"],
+        database=DATABASE,
+        warehouse="COMPUTE_WH",
         authenticator=os.environ.get("SNOWFLAKE_AUTHENTICATOR", "snowflake"),
         token=os.environ.get("SNOWFLAKE_TOKEN"),
-        workload_identity_provider=os.environ.get("SNOWFLAKE_WORKLOAD_IDENTITY_PROVIDER"),
+        workload_identity_provider=os.environ.get(
+            "SNOWFLAKE_WORKLOAD_IDENTITY_PROVIDER"
+        ),
+    )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def test_schema(snowflake_connection: SnowflakeConnection):
+    schema = f"TEST_RUN_{int(time.time())}"
+    snowflake_connection.cursor().execute("USE ROLE SYSADMIN;")
+    snowflake_connection.cursor().execute("USE WAREHOUSE COMPUTE_WH;")
+    snowflake_connection.cursor().execute(f"CREATE SCHEMA {DATABASE}.{schema}")
+    snowflake_connection.cursor().execute(f"USE SCHEMA {schema}")
+    yield schema
+    snowflake_connection.cursor().execute(
+        f"DROP SCHEMA IF EXISTS {DATABASE}.{schema} CASCADE"
     )
 
 
