@@ -115,7 +115,6 @@ class SnowflakeAPI(DatabaseAPI[SnowflakeCursor]):
             )
 
         table_name = table_name.upper()
-        input.columns = [col.upper() for col in input.columns]
 
         # Use snowflake helper library rather than faff around
         sf_pd_tools.write_pandas(self._con, input, table_name, auto_create_table=True)
