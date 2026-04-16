@@ -1,17 +1,8 @@
 import pandas as pd
-import pytest
 from snowflake.connector import SnowflakeConnection
 from splink.datasets import splink_datasets
 
 from splink_snowflake import SnowflakeAPI
-
-
-@pytest.fixture
-def snowflake_connection() -> SnowflakeConnection:
-    """
-    Override environment variable `SNOWFLAKE_DEFAULT_CONNECTION_NAME` to change.
-    """
-    return SnowflakeConnection()
 
 
 def test_snowflake_create_dp_api(snowflake_connection: SnowflakeConnection):
