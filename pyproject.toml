@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "Snowflake backend support for Splink"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "splink>=4.0.16",
+    "snowflake-connector-python[pandas]>=4.3.0"
+]
 keywords = [
     "data linking",
     "record linkage",
@@ -13,7 +16,15 @@ keywords = [
     "fuzzy matching",
 ]
 license = {text = "MIT License"}
+authors = [
+    {"name" = "Lawrence Adams"}
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=9.0.3"
+]
