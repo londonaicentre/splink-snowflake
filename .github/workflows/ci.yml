@@ -24,6 +24,7 @@ jobs:
         run: |
           mkdir -p ~/.snowflake
           echo "${{ secrets.SNOWFLAKE_CONNECTIONS_TOML }}" > ~/.snowflake/connections.toml
+          chmod 600 ~/.snowflake/connections.toml
 
       - name: Run integration tests
         env:
