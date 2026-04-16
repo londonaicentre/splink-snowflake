@@ -81,6 +81,12 @@ class SnowflakeDataframe(SplinkDataFrame):
         pq.write_table(table=arrow_table, where=filepath)
 
     def to_csv(self, filepath, overwrite=False):
+        """
+        Snowflake implementation for CSV output.
+
+        Note: this doesn't unload / COPY to a remote location,
+        but materialises the CSV where the splink-snowflake client is.
+        """
         if not overwrite:
             self.check_file_exists(filepath)
 
