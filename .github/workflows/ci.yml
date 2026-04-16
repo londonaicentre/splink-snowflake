@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  push:
+    branches: [main]
+
+jobs:
+  integration:
+    if: |
+      github.event_name == 'push' ||
+      contains(github.event.pull_request.labels.*.name, 'run-integration')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Write Snowflake connections.toml
+        run: |
+          mkdir -p ~/.snowflake
+          echo "${{ secrets.SNOWFLAKE_CONNECTIONS_TOML }}" > ~/.snowflake/connections.toml
+
+      - name: Run integration tests
+        env:
+          SNOWFLAKE_DEFAULT_CONNECTION_NAME: ${{ secrets.SNOWFLAKE_DEFAULT_CONNECTION_NAME }}
+        run: uv run pytest tests/ -v
