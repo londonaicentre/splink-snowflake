@@ -12,16 +12,18 @@ DATABASE = "SPLINK_DEV"
 
 @pytest.fixture(scope="session")
 def snowflake_connection() -> SnowflakeConnection:
-    return snowflake.connector.connect(
-        account=os.environ["SNOWFLAKE_ACCOUNT"],
-        database=DATABASE,
-        warehouse="COMPUTE_WH",
-        authenticator=os.environ.get("SNOWFLAKE_AUTHENTICATOR", "snowflake"),
-        token=os.environ.get("SNOWFLAKE_TOKEN"),
-        workload_identity_provider=os.environ.get(
-            "SNOWFLAKE_WORKLOAD_IDENTITY_PROVIDER"
-        ),
-    )
+    if os.environ.get("GITHUB_ACTIONS"):
+        return snowflake.connector.connect(
+            account=os.environ["SNOWFLAKE_ACCOUNT"],
+            database=DATABASE,
+            warehouse="COMPUTE_WH",
+            authenticator=os.environ.get("SNOWFLAKE_AUTHENTICATOR", "snowflake"),
+            token=os.environ.get("SNOWFLAKE_TOKEN"),
+            workload_identity_provider=os.environ.get(
+                "SNOWFLAKE_WORKLOAD_IDENTITY_PROVIDER"
+            ),
+        )
+    return SnowflakeConnection()
 
 
 @pytest.fixture(scope="session", autouse=True)
