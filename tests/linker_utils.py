@@ -14,9 +14,9 @@ def _test_table_registration(
     # Standard pandas df...
     a = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
 
-    linker.table_management.register_table(a, "__splink__df_pd")
+    linker.table_management.register_table(a, "__splink__df_pd__test_registration")
     pd_df = linker.misc.query_sql(
-        "select * from __splink__df_pd", output_type="splinkdf"
+        "select * from __splink__df_pd__test_registration", output_type="splinkdf"
     )
     assert sum(pd_df.as_pandas_dataframe().a) == sum(a.a)
 
@@ -28,12 +28,16 @@ def _test_table_registration(
 
     # Duplicate table name (check for error)
     with pytest.raises(ValueError):
-        linker.table_management.register_table(test_dict, "__splink__df_pd")
+        linker.table_management.register_table(
+            test_dict, "__splink__df_pd__test_registration"
+        )
     # Test overwriting works
     linker.table_management.register_table(
-        test_dict_df, "__splink__df_pd", overwrite=True
+        test_dict_df, "__splink__df_pd__test_registration", overwrite=True
     )
-    out = linker.misc.query_sql("select * from __splink__df_pd", output_type="pandas")
+    out = linker.misc.query_sql(
+        "select * from __splink__df_pd__test_registration", output_type="pandas"
+    )
     assert sum(out.a) == sum(test_dict_df.a)
 
     # Record level dictionary
