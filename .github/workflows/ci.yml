@@ -23,7 +23,10 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        # Need fetch-depth 0 to get origin/main
+        with:
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v5
 
@@ -31,7 +34,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           PR_VERSION=$(uv version --short)
-          git checkout main -- pyproject.toml
+          git checkout origin/main -- pyproject.toml
           MAIN_VERSION=$(uv version --short)
           git checkout HEAD -- pyproject.toml
 
