@@ -21,6 +21,33 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
 
+      - name: Check version bump
+        if: github.event_name == 'pull_request'
+        run: |
+          PR_VERSION=$(uv version --short)
+          git checkout origin/main -- pyproject.toml
+          MAIN_VERSION=$(uv version --short)
+          git checkout HEAD -- pyproject.toml
+
+          echo "Main version: $MAIN_VERSION"
+          echo "PR version:   $PR_VERSION"
+
+          if [ "$PR_VERSION" = "$MAIN_VERSION" ]; then
+            echo ""
+            echo "::error::Version was not bumped. Please run one of:"
+            echo "::error::  uv version --bump patch   # bug fixes"
+            echo "::error::  uv version --bump minor   # new features"
+            echo "::error::  uv version --bump major   # breaking changes"
+            exit 1
+          fi
+
+          printf '%s\n%s' "$MAIN_VERSION" "$PR_VERSION" | sort -V -C || {
+            echo "::error::PR version ($PR_VERSION) is not greater than main ($MAIN_VERSION)"
+            exit 1
+          }
+
+          echo "Version bump verified: $MAIN_VERSION → $PR_VERSION"
+
       - name: Setup Snowflake cli
         uses: snowflakedb/snowflake-cli-action@v2.0
         with:
@@ -37,3 +64,35 @@ jobs:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           UV_PYTHON: "3.12"
         run: uv run pytest tests/ -v
+
+  release:
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: codebuild-londonaicentre-org-runner-${{ github.run_id }}-${{ github.run_attempt }}
+    environment: pypi
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Create and push tag
+        run: |
+          VERSION=$(uv version --short)
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Tag v$VERSION already exists, skipping"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+          echo "Tagged v$VERSION"
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish to PyPI
+        run: uv publish
