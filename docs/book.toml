@@ -1,0 +1,9 @@
+[book]
+title = "splink-snowflake"
+authors = ["Lawrence Adams"]
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/londonaicentre/splink-snowflake"
+edit-url-template = "https://github.com/londonaicentre/splink-snowflake/edit/main/docs/{path}"
