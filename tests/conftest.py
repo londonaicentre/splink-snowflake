@@ -1,4 +1,7 @@
+import os
+
 import pytest
+import snowflake.connector
 from snowflake.connector import SnowflakeConnection
 
 from splink_snowflake import SnowflakeAPI
@@ -6,11 +9,12 @@ from splink_snowflake import SnowflakeAPI
 
 @pytest.fixture(scope="session")
 def snowflake_connection() -> SnowflakeConnection:
-    """
-    Return a default connection for consumption in testing. If this needs to be
-    overriden then set: `SNOWFLAKE_DEFAULT_CONNECTION_NAME` to a different name.
-    """
-    return SnowflakeConnection()
+    return snowflake.connector.connect(
+        account=os.environ["SNOWFLAKE_ACCOUNT"],
+        authenticator=os.environ.get("SNOWFLAKE_AUTHENTICATOR", "snowflake"),
+        token=os.environ.get("SNOWFLAKE_TOKEN"),
+        workload_identity_provider=os.environ.get("SNOWFLAKE_WORKLOAD_IDENTITY_PROVIDER"),
+    )
 
 
 @pytest.fixture(scope="function")
