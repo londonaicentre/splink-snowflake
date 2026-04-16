@@ -18,7 +18,8 @@ class SnowflakeDataframe(SplinkDataFrame):
     def columns(self) -> list[InputColumn]:
         sql = (
             f"SELECT lower(column_name) FROM information_schema.columns "
-            f"WHERE table_name = '{self.physical_name.upper()}'"
+            f"WHERE table_name = '{self.physical_name.upper()}' "
+            f"AND table_schema = CURRENT_SCHEMA()"
         )
         res = self.db_api._execute_sql_against_backend(sql)
         cols = [col[0] for col in res.fetchall()]

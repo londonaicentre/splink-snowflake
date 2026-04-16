@@ -81,7 +81,7 @@ jobs:
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           UV_PYTHON: "3.12"
-        run: uv run pytest tests/ -v
+        run: uv run pytest tests/ -v -x # Fail fast to stop snowflake credit spend
 
   release:
     needs: integration
