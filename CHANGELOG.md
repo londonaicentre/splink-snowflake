@@ -1,10 +1,15 @@
 # Changelog
 
-## Unreleased
-
+## 0.1.1
+### Added
 - Add OIDC / Workload Identity authentication support for GitHub Actions CI
 - Add isolated test schema per run (`TEST_RUN_<epoch>`) with guaranteed teardown
 - Add docs (this book)
+- Initial PyPI release
+
+## Fixed
+- Fix bug which resulted in columns from tables with the same name outside the current session context (e.g. another schema) being added to a query: Force `INFORMATION_SCHEMA` to check only the current schema when inspecting tables.
+  - This may constrain inspecting tables outside the current session context; will review in future releases.
 
 ## 0.1.0
 
