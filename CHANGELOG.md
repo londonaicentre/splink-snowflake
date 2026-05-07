@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+### Added
+- Implement Jaccard Similarity function name (using undocumented Snowflake function), and test
+
 ## 0.1.1
 ### Added
 - Add OIDC / Workload Identity authentication support for GitHub Actions CI
