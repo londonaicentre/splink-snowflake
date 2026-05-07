@@ -22,6 +22,11 @@ class SnowflakeDialect(SplinkDialect):
         return "JACCARD_SIMILARITY"
 
     @property
+    def jaro_function_name(self):
+        # WIP
+        return super().jaro_function_name
+
+    @property
     def cosine_similarity_function_name(self) -> str:
         return "VECTOR_COSINE_SIMILARITY"
 
