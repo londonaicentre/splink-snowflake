@@ -54,7 +54,8 @@ class SnowflakeAPI(DatabaseAPI[SnowflakeCursor]):
 
     def _register_udfs(self):
         self._create_log2_function()
-        self._create_damerau_levenshtein()
+        self._create_damerau_levenshtein_udf()
+        self._create_jaro_udf()
 
     # === CUSTOM UDFs ===
     def _create_log2_function(self):
@@ -68,7 +69,7 @@ class SnowflakeAPI(DatabaseAPI[SnowflakeCursor]):
             """
         self._con.cursor().execute(sql)
 
-    def _create_damerau_levenshtein(self):
+    def _create_damerau_levenshtein_udf(self):
         logger.debug("Creating function DAMERAU_LEVENSHTEIN")
         sql = """
             CREATE OR REPLACE FUNCTION DAMERAU_LEVENSHTEIN(STRING_1 STRING, STRING_2 STRING)
@@ -84,6 +85,26 @@ from rapidfuzz.distance import DamerauLevenshtein
 
 def udf(string_1: str, string_2: str) -> int:
     return DamerauLevenshtein.distance(string_1, string_2)
+$$;
+        """
+        self._con.cursor().execute(sql)
+
+    def _create_jaro_udf(self):
+        logger.debug("Creating function JARO_SIMILARITY")
+        sql = """
+            CREATE OR REPLACE FUNCTION JARO_SIMILARITY(STRING_1 STRING, STRING_2 STRING)
+            RETURNS FLOAT
+            LANGUAGE PYTHON
+            RUNTIME_VERSION = 3.13
+            ARTIFACT_REPOSITORY = SNOWFLAKE.SNOWPARK.PYPI_SHARED_REPOSITORY
+            HANDLER = 'udf'
+            PACKAGES = ('rapidfuzz')
+            AS
+            $$
+from rapidfuzz.distance import Jaro
+
+def udf(string_1: str, string_2: str) -> float:
+    return Jaro.similarity(string_1, string_2)
 $$;
         """
         self._con.cursor().execute(sql)

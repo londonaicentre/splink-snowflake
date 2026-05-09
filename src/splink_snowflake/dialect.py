@@ -22,6 +22,10 @@ class SnowflakeDialect(SplinkDialect):
         return "JAROWINKLER_SIMILARITY"
 
     @property
+    def jaro_function_name(self):
+        return "JARO_SIMILARITY"
+
+    @property
     def jaccard_function_name(self) -> str:
         return "JACCARD_SIMILARITY"
 
