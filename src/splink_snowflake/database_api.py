@@ -54,17 +54,38 @@ class SnowflakeAPI(DatabaseAPI[SnowflakeCursor]):
 
     def _register_udfs(self):
         self._create_log2_function()
+        self._create_damerau_levenshtein()
 
     # === CUSTOM UDFs ===
     def _create_log2_function(self):
         sql = """
-            CREATE TEMPORARY FUNCTION IF NOT EXISTS LOG2(FLOAT_IN FLOAT)
+            CREATE OR REPLACE FUNCTION LOG2(FLOAT_IN FLOAT)
             RETURNS FLOAT
             AS
             $$
             LOG(2, FLOAT_IN)
             $$;
             """
+        self._con.cursor().execute(sql)
+
+    def _create_damerau_levenshtein(self):
+        logger.debug("Creating function DAMERAU_LEVENSHTEIN")
+        sql = """
+            CREATE OR REPLACE FUNCTION DAMERAU_LEVENSHTEIN(STRING_1 STRING, STRING_2 STRING)
+            RETURNS INTEGER
+            LANGUAGE PYTHON
+            RUNTIME_VERSION = 3.13
+            ARTIFACT_REPOSITORY = SNOWFLAKE.SNOWPARK.PYPI_SHARED_REPOSITORY
+            HANDLER = 'udf'
+            PACKAGES = ('rapidfuzz')
+            AS
+            $$
+from rapidfuzz.distance import DamerauLevenshtein
+
+def udf(string_1: str, string_2: str) -> int:
+    return DamerauLevenshtein.distance(string_1, string_2)
+$$;
+        """
         self._con.cursor().execute(sql)
 
     # === END CUSTOM UDFs ===
