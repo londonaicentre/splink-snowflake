@@ -14,7 +14,7 @@ class SnowflakeDialect(SplinkDialect):
         return "EDITDISTANCE"
 
     @property
-    def damerau_levenshtein_function_name(self):
+    def damerau_levenshtein_function_name(self) -> str:
         return "DAMERAU_LEVENSHTEIN"
 
     @property
@@ -22,7 +22,7 @@ class SnowflakeDialect(SplinkDialect):
         return "JAROWINKLER_SIMILARITY"
 
     @property
-    def jaro_function_name(self):
+    def jaro_function_name(self) -> str:
         return "JARO_SIMILARITY"
 
     @property

@@ -33,4 +33,4 @@ Splink uses random sampling during `estimate_u_using_random_sampling`. On Snowfl
 
 ## UDFs
 
-Snowflake lacks various UDFs required for mathmatical functions, and string similarity checking. These are created by default upon construction of the `SnowflakeAPI` class.
+Snowflake lacks various UDFs required for mathematical functions, and string similarity checking. These are created by default upon construction of the `SnowflakeAPI` class.

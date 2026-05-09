@@ -10,7 +10,6 @@ def test_jaccard_similarity(snowflake_connection: SnowflakeConnection):
     Snowflake has an undocumented function `JACCARD_SIMILARITY(STRING, STRING)`.
     This test validates it exists.
     """
-    # Implicitly calls _register_udfs
     cursor = snowflake_connection.cursor()
     # Have two checks
     result = cursor.execute(
@@ -27,7 +26,7 @@ def test_jaccard_similarity(snowflake_connection: SnowflakeConnection):
 
 def test_damerau_levenshtein_udf(snowflake_api: SnowflakeAPI):
     """
-    Test functionality creation and functioanlity of `DAMERAU_LEVENSHTEIN(STRING, STRING)`.
+    Test functionality creation and functionality of `DAMERAU_LEVENSHTEIN(STRING, STRING)`.
     """
     api = snowflake_api
     # Have two checks
@@ -50,7 +49,7 @@ def test_damerau_levenshtein_function_name_exists():
 
 def test_jaro_udf(snowflake_api: SnowflakeAPI):
     """
-    Test functionality creation and functioanlity of `JARO_SIMILARITY(STRING, STRING)`.
+    Test functionality creation and functionality of `JARO_SIMILARITY(STRING, STRING)`.
     """
     api = snowflake_api
     # Have two checks
