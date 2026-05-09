@@ -2,7 +2,11 @@
 
 ## 0.1.2
 ### Added
-- Implement Jaccard Similarity function name (using undocumented Snowflake function), and test
+- Implement string similarity UDFs and Splink function name hooks:
+  - Jaccard Similarity function name (using undocumented Snowflake function)
+  - Jaro Similarity UDF
+  - Damerau-Levenshtein UDF
+- Add UDF tests
 
 ## 0.1.1
 ### Added
