@@ -14,8 +14,20 @@ class SnowflakeDialect(SplinkDialect):
         return "EDITDISTANCE"
 
     @property
+    def damerau_levenshtein_function_name(self) -> str:
+        return "DAMERAU_LEVENSHTEIN"
+
+    @property
     def jaro_winkler_function_name(self) -> str:
         return "JAROWINKLER_SIMILARITY"
+
+    @property
+    def jaro_function_name(self) -> str:
+        return "JARO_SIMILARITY"
+
+    @property
+    def jaccard_function_name(self) -> str:
+        return "JACCARD_SIMILARITY"
 
     @property
     def cosine_similarity_function_name(self) -> str:

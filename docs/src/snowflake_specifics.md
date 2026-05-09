@@ -17,6 +17,9 @@ Snowflake uses different function names from standard SQL for string similarity.
 | Levenshtein distance | `EDITDISTANCE` |
 | Jaro-Winkler similarity | `JAROWINKLER_SIMILARITY` |
 | Cosine similarity | `VECTOR_COSINE_SIMILARITY` |
+| Damerau Levenshtein | `DAMERAU_LEVENSHTEIN` |
+| Jaccard similarity | `JACCARD_SIMILARITY` |
+| Jaro similarity | `JARO_SIMILARITY` |
 
 When using comparison creators (e.g. `cl.LevenshteinAtThresholds`), the dialect translation is applied automatically. Avoid writing raw Levenshtein SQL in settings dicts — use comparison library functions instead.
 
@@ -28,13 +31,6 @@ By default, intermediate Splink tables are created as `TRANSIENT` tables to avoi
 
 Splink uses random sampling during `estimate_u_using_random_sampling`. On Snowflake this is implemented with `SAMPLE BERNOULLI(x%)`, with optional `REPEATABLE(seed)` for reproducibility.
 
-## LOG2 UDF
+## UDFs
 
-Snowflake lacks a built-in `LOG2` function. `SnowflakeAPI` registers a temporary UDF at session start:
-
-```sql
-CREATE TEMPORARY FUNCTION IF NOT EXISTS LOG2(FLOAT_IN FLOAT)
-RETURNS FLOAT AS $$ LOG(2, FLOAT_IN) $$;
-```
-
-This is scoped to the session and does not persist.
+Snowflake lacks various UDFs required for mathematical functions, and string similarity checking. These are created by default upon construction of the `SnowflakeAPI` class.
